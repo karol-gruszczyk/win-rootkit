@@ -1,5 +1,5 @@
 # Windows rootkit
-Rootkit for hiding processes and files,
+Rootkit for hiding processes and files,  
 desgined for windows platform
 
 ## Requirements
