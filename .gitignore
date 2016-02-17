@@ -1,4 +1,6 @@
 # Compiled Object files
+.*
+!.gitignore
 *.slo
 *.lo
 *.o
