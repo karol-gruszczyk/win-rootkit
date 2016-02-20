@@ -1,6 +1,14 @@
-# Compiled Object files
 .*
 !.gitignore
+
+# Visual Studio
+Debug/
+Release/
+*.opensdf
+*.sdf
+*.suo
+
+# Compiled Object files
 *.slo
 *.lo
 *.o

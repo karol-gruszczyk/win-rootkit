@@ -4,7 +4,7 @@ desgined for windows platform
 
 ## Requirements
 * g++
-* cmake
+* make
 
 ## Setup
 ```bash
