@@ -1,0 +1,3 @@
+[submodule "mhook"]
+	path = src/mhook
+	url = git@github.com:martona/mhook.git

