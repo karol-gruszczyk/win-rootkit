@@ -6,11 +6,14 @@
 
 
 typedef int (WINAPI *MessageBoxAPtr)(HWND, LPCSTR, LPCSTR, UINT);
+Hook* hook;
 
 int WINAPI OverloadedMessageBoxA(HWND hwnd, LPCSTR text, LPCSTR title, UINT type)
 {
-	std::cout << "test test" << std::endl;
-	return 0;
+	hook->remove_hook();
+	int ret = MessageBoxA(hwnd, "HACKED LOL", "H4CK", type);
+	hook->install_hook();
+	return ret;
 }
 
 void test()
@@ -20,11 +23,13 @@ void test()
 
 int main()
 {
+	HMODULE hmodule = GetModuleHandleA("user32.dll");
+	DWORD oldFuncPtr = reinterpret_cast<DWORD>(GetProcAddress(hmodule, "MessageBoxA"));
+	DWORD newFuncPtr = reinterpret_cast<DWORD>(&OverloadedMessageBoxA);
 	test();
-	DWORD oldFuncPtr = reinterpret_cast<DWORD>(MessageBoxA);
-	DWORD newFuncPtr = reinterpret_cast<DWORD>(OverloadedMessageBoxA);
-	Hook::get_instance()->install_hook(oldFuncPtr, newFuncPtr);
+	hook = new Hook(oldFuncPtr, newFuncPtr);
+	hook->install_hook();
 	test();
-	system("pause");
+	delete hook;
 	return 0;
 }

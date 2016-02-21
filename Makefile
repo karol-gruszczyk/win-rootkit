@@ -1,10 +1,9 @@
 cc = g++
 
-lflags = -Wall --std=c++11
-cflags = $(lflags) -c
+flags = -Wall --std=c++11
 
 ifeq ($(debug), true)
-	cdebug = -g
+	flags += -g
 endif
 
 
@@ -18,20 +17,20 @@ rootkit_cppsources = src/main.cpp src/hook.cpp
 rootkit_cppobjects = $(rootkit_cppsources:.cpp=.o)
 
 rootkit: $(rootkit_cppobjects)
-	$(cc) $(cdebug) $(lflags) $(rootkit_cppobjects) -o $(rootkit_target)
+	$(cc) $(flags) $(rootkit_cppobjects) -o $(rootkit_target)
 
-main.o: main.cpp
-	$(cc) $(cdebug) $(cflags) main.cpp
+src/main.o: src/main.cpp
+	$(cc) $(flags) -c src/main.cpp -o src/main.o
 
-hook.o: hook.cpp hook.h
-	$(cc) $(cdebug) $(cflags) hook.cpp
+src/hook.o: src/hook.cpp src/hook.h
+	$(cc) $(flags) -c src/hook.cpp -o src/hook.o
 
 
 
 test_target=test.exe
 
 test:
-	$(cc) $(cdebug) $(cflags) src/test.cpp -o $(test_target)
+	$(cc) $(flags) src/test.cpp -o $(test_target)
 
 
 clean:

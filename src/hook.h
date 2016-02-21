@@ -6,15 +6,18 @@
 class Hook
 {
 public:
-	static Hook* get_instance();
-
-	void install_hook(DWORD at_address, DWORD to_address);
-private:
-	Hook();
+	Hook(DWORD at_address, DWORD to_address);
 	~Hook();
 
-	static Hook* instance;
+	void install_hook();
+	void remove_hook();
+private:
+	bool is_hooked = false;
+	DWORD hooking_address;
+	DWORD destination_address;
 	BYTE x86_code[X86_CODE_LEN];
+	BYTE x86_orig_code[X86_CODE_LEN];
 
+	void copy_x86_code(BYTE x86_code[X86_CODE_LEN]);
 	void update_jmp_address(DWORD address);
 };
