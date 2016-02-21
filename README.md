@@ -8,7 +8,7 @@ desgined for windows platform
 
 ## Setup
 ```bash
-git clone git@github.com:karol-gruszczyk/win-rootkit.git
+git clone --recursive git@github.com:karol-gruszczyk/win-rootkit.git
 cd win-rootkit/
 make
 ```
