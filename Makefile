@@ -13,7 +13,7 @@ all: rootkit test
 
 
 rootkit_target = rootkit.exe
-rootkit_cppsources = src/main.cpp src/hook.cpp
+rootkit_cppsources = src/main.cpp src/dll_injector.cpp
 rootkit_cppobjects = $(rootkit_cppsources:.cpp=.o)
 
 rootkit: $(rootkit_cppobjects)
@@ -22,8 +22,8 @@ rootkit: $(rootkit_cppobjects)
 src/main.o: src/main.cpp
 	$(cc) $(flags) -c src/main.cpp -o src/main.o
 
-src/hook.o: src/hook.cpp src/hook.h
-	$(cc) $(flags) -c src/hook.cpp -o src/hook.o
+src/dll_injector.o: src/dll_injector.cpp src/dll_injector.h
+	$(cc) $(flags) -c src/dll_injector.cpp -o src/dll_injector.o
 
 
 
