@@ -1,27 +1,38 @@
-# the compiler: gcc for C, g++ for C++
-CC=cl.exe
-LINK=link.exe
+cc = g++
 
-# compiler flags:
-#  -g    adds debugging information to the executable file
-#  -Wall turns on most, but not all, compiler warnings
+lflags = -Wall --std=c++11
+cflags = $(lflags) -c
 
-CFLAGS=-g -Wall --std=c++11
-
-TARGET=rootkit.exe
-TEST_TARGET=test.exe
+ifeq ($(debug), true)
+	cdebug = -g
+endif
 
 
-all: main.o
-	$(CC) main.o -o $(TARGET)
+
+all: rootkit test
+
+
+
+rootkit_target = rootkit.exe
+rootkit_cppsources = src/main.cpp src/hook.cpp
+rootkit_cppobjects = $(rootkit_cppsources:.cpp=.o)
+
+rootkit: $(rootkit_cppobjects)
+	$(cc) $(cdebug) $(lflags) $(rootkit_cppobjects) -o $(rootkit_target)
 
 main.o: main.cpp
-	$(CC) $(CFLAGS) -c main.cpp
+	$(cc) $(cdebug) $(cflags) main.cpp
 
+hook.o: hook.cpp hook.h
+	$(cc) $(cdebug) $(cflags) hook.cpp
+
+
+
+test_target=test.exe
 
 test:
-	$(CC) $(CFLAGS) test.cpp -o $(TEST_TARGET)
+	$(cc) $(cdebug) $(cflags) src/test.cpp -o $(test_target)
 
 
 clean:
-	$(RM) *.o
+	$(RM) src/*.o
